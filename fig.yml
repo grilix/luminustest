@@ -1,0 +1,7 @@
+web:
+  build: .
+  command: lein ring server-headless
+  volumes:
+   - .:/app
+  ports:
+   - "3000:3000"
