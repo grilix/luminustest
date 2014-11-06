@@ -1,6 +1,7 @@
 # luminustest
 
-A simple Luminus test project running on docker/fig in osx.
+A simple Luminus test project with postgres and authentication support
+running on docker/fig in osx.
 
 ## Prerequisites
 
@@ -16,7 +17,7 @@ Leiningen: `brew install leiningen`, or https://github.com/technomancy/leiningen
 
 This is how this project was created, so you know what happened.
 
-    $ lein new luminus luminustest
+    $ lein new luminus luminustest +postgres +site
     $ cd luminustest
 
 Then add the `Dockerfile` and `fig.yml` (included on this repo).
@@ -28,9 +29,15 @@ At this point, we have something like this:
     $ ls
     Dockerfile  Procfile    README.md   fig.yml     project.clj resources/  src/        test/
 
+Configure the database connection string in "/project.clj", and connection information on
+"/src/luminustest/db/schema.clj".
+
+The database host is `db` and the user is `postgres`.
+
+
 ## Running
 
-From now on, you shold be inside a boot2docker terminal, or with the required environment variables set,
+From now on, you should be inside a boot2docker terminal, or with the required environment variables set,
 this is covered in the docker installation page for osx: https://docs.docker.com/installation/mac/
 
 To build the container and make sure everything is okay:
@@ -50,7 +57,11 @@ Then, to start the server:
     ...
     web_1 | Started server on port 3000
 
-The server is running, but it's listening on a different IP (because of boot2docker), to discover the IP:
+Run the database migrations:
+
+    $ fig run web lein ragtime migrate
+
+Everything is running, but the web server is listening on a different IP (because of boot2docker), to discover the IP:
 
     $ boot2docker ip
 
